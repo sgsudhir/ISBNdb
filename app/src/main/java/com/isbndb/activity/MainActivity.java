@@ -1,30 +1,36 @@
 package com.isbndb.activity;
 
-import android.graphics.drawable.Drawable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.isbndb.R;
+import com.isbndb.helper.SearchHistory;
+
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,TextWatcher {
     AutoCompleteTextView textViewSearch;
     Button buttonSearch, buttonClear, buttonSetting;
+    SearchHistory history;
+    String searchQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        history = new SearchHistory(getApplicationContext());
+
+        String []userHistory = history.getHistory();
+        Log.d("Count",history.getHistoryLength() + ": Ok");
+        for (int i=0; i< userHistory.length ;i++)
+            Log.d("Data: ", userHistory[i] + " Ok");
 
         textViewSearch = (AutoCompleteTextView) findViewById(R.id.searchbar_activity_main);
         buttonSearch = (Button) findViewById(R.id.button_search_activity_main);
@@ -35,9 +41,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonSearch.setOnClickListener(this);
         buttonSetting.setOnClickListener(this);
         textViewSearch.addTextChangedListener(this);
-
         buttonClear.setVisibility(View.INVISIBLE);
+
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,userHistory);
+        textViewSearch.setAdapter(adapter);
     }
+
 
     @Override
     public void onClick(View v) {
@@ -47,6 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 buttonClear.setVisibility(View.INVISIBLE);
                 break;
             case R.id.button_search_activity_main:
+                searchQuery = null;
+                searchQuery = textViewSearch.getText().toString().trim();
+                if (searchQuery.isEmpty()) {
+                    Toast.makeText(this, "Please enter a keyword to search !", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                searchQuery = searchQuery.replaceAll("  ", "+");
+                searchQuery = searchQuery.replaceAll(" ", "+");
                 break;
             case R.id.button_setting_activity_main:
                 break;
@@ -64,11 +81,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onTextChanged(CharSequence s, int start, int before, int count) {
         if (count > 0)
             buttonClear.setVisibility(View.VISIBLE);
-        Toast.makeText(getApplicationContext(),s.toString(),Toast.LENGTH_SHORT).show();
+        else
+            buttonClear.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void afterTextChanged(Editable s) {
 
     }
+
 }
