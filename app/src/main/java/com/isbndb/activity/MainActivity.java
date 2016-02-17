@@ -1,5 +1,6 @@
 package com.isbndb.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.isbndb.R;
 import com.isbndb.helper.SearchHistory;
+import com.isbndb.network.JSONRequest;
+import com.isbndb.utility.ApiDetails;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,TextWatcher {
@@ -64,8 +67,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 searchQuery = searchQuery.replaceAll("  ", "+");
                 searchQuery = searchQuery.replaceAll(" ", "+");
+                new JSONRequest(this, new ApiDetails(null).getBooks(searchQuery), null) {
+                    @Override
+                    protected void onJSONErrorResponse(String response) {
+                        Log.d("Error Listener: ", response + ": ERROR");
+                    }
+
+                    @Override
+                    protected void onJSONResponse(String response) {
+                        Log.d("Response: ", response + ": Success");
+                    }
+                }.execute("first");
                 break;
             case R.id.button_setting_activity_main:
+             //   startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             default:
                 break;
