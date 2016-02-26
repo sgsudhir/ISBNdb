@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }.execute("first");
                 break;
             case R.id.button_setting_activity_main:
-             //   startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
                 break;
             default:
                 break;

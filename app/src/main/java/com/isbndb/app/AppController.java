@@ -7,6 +7,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.isbndb.helper.KeyManager;
+import com.isbndb.helper.SearchHistory;
 
 public class AppController extends Application {
 
@@ -15,14 +17,25 @@ public class AppController extends Application {
             .getSimpleName();
 
     private RequestQueue mRequestQueue;
-    private ImageLoader mImageLoader;
-
     private static AppController mInstance;
+    private static KeyManager keyManager;
+    private static SearchHistory searchHistory;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        keyManager = new KeyManager(getApplicationContext());
+        searchHistory = new SearchHistory(getApplicationContext());
+
+    }
+
+    public static KeyManager getKeyManagerInstant() {
+        return keyManager;
+    }
+
+    public static SearchHistory getSearchHistoryInstant() {
+        return searchHistory;
     }
 
     public static synchronized AppController getInstance() {

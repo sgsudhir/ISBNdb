@@ -28,7 +28,6 @@ public class SearchHistory {
         this.index = mSharedPreference.getInt("index",-1);
         if (this.index == -1)
             return false;
-
         mEditor.putString((this.index + 1) + "",query);
         mEditor.remove("index");
         mEditor.commit();
