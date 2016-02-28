@@ -1,6 +1,7 @@
 package com.isbndb.network;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -29,12 +30,20 @@ public abstract class JSONRequest {
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                onJSONResponse(response.toString());
+                try {
+                    onJSONResponse(response.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onJSONErrorResponse(error.toString());
+                try {
+                    onJSONErrorResponse(error.getMessage());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }) {
             @Override

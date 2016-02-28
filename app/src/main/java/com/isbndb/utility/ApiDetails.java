@@ -32,6 +32,10 @@ public class ApiDetails {
         return BASE_URL + apiToken + "/subjects?q=" + query;
     }
 
+    public String getCategories(String query) {
+        return BASE_URL + apiToken + "/categories?q=" + query;
+    }
+
     public String getPrices(String query) {
         return BASE_URL + apiToken + "/prices/" + query;
     }

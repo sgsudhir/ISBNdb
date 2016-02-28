@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_wood">
+    <LinearLayout
+        android:id="@+id/layout_footer_tab_books"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_margin="5dp"
+        android:background="@drawable/bg_white_transparent"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/button_page_previous_tab_books"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="P-"
+            android:background="@drawable/bg_red_transparent"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/text_view_pages_tab_books"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="10000 Pages"
+            android:textColor="#000000"
+            android:gravity="center"/>
+        <Button
+            android:id="@+id/button_page_next_tab_books"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="P+"
+            android:background="@drawable/bg_red_transparent"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@id/layout_footer_tab_books">
+        <ListView android:id="@+id/list_view_books"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_wood"
+            android:fitsSystemWindows="true" />
+    </LinearLayout>
+</RelativeLayout>

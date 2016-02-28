@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.isbndb.R;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonSearch, buttonClear, buttonSetting;
     SearchHistory history;
     String searchQuery;
+    String[] userHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +32,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         history = new SearchHistory(getApplicationContext());
 
-        String []userHistory = history.getHistory();
-        Log.d("Count",history.getHistoryLength() + ": Ok");
-        for (int i=0; i< userHistory.length ;i++)
-            Log.d("Data: ", userHistory[i] + " Ok");
 
         textViewSearch = (AutoCompleteTextView) findViewById(R.id.searchbar_activity_main);
         buttonSearch = (Button) findViewById(R.id.button_search_activity_main);
@@ -46,8 +44,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewSearch.addTextChangedListener(this);
         buttonClear.setVisibility(View.INVISIBLE);
 
-        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,userHistory);
-        textViewSearch.setAdapter(adapter);
+        userHistory = history.getHistory();
+        refreshSearchAdapter();
     }
 
 
@@ -65,19 +63,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Please enter a keyword to search !", Toast.LENGTH_SHORT).show();
                     break;
                 }
+                boolean flag = false;
+                for (int i=0; i<userHistory.length; i++)
+                    if (userHistory[i].toLowerCase().trim().equals(searchQuery.toLowerCase().trim())) {
+                        flag = true;
+                        break;
+                    }
+                if (!flag) {
+                    history.addToHistory(searchQuery);
+                    refreshSearchAdapter();
+                }
+                Intent queryIntent = new Intent(MainActivity.this, TabActivity.class);
                 searchQuery = searchQuery.replaceAll("  ", "+");
                 searchQuery = searchQuery.replaceAll(" ", "+");
-                new JSONRequest(this, new ApiDetails(null).getBooks(searchQuery), null) {
-                    @Override
-                    protected void onJSONErrorResponse(String response) {
-                        Log.d("Error Listener: ", response + ": ERROR");
-                    }
-
-                    @Override
-                    protected void onJSONResponse(String response) {
-                        Log.d("Response: ", response + ": Success");
-                    }
-                }.execute("first");
+                queryIntent.putExtra("searchQuery", searchQuery);
+                startActivity(queryIntent);
                 break;
             case R.id.button_setting_activity_main:
                 startActivity(new Intent(MainActivity.this, SettingActivity.class));
@@ -105,4 +105,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    protected void refreshSearchAdapter() {
+        userHistory = history.getHistory();
+        ArrayAdapter adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,userHistory);
+        textViewSearch.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshSearchAdapter();
+    }
 }
